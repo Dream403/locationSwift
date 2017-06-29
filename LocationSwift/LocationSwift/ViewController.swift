@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     
   }, { (placemark) in
     
-       print("\(placemark!.country)")
+       print("\(String(describing: placemark?.city))")
     
   }) { (placemarkError) in
     

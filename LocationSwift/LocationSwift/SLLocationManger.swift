@@ -9,33 +9,60 @@
 import UIKit
 import CoreLocation
 
+
+extension String {
+    
+    func substring(s: Int, _ e: Int? = nil) -> String {
+        
+        let start = s >= 0 ? self.startIndex : self.endIndex
+        
+        let startIndex = index(start, offsetBy: s)
+        
+        var end: String.Index
+        var endIndex: String.Index
+        if(e == nil){
+            end = self.endIndex
+            endIndex = self.endIndex
+        } else {
+            end = e! >= 0 ? self.startIndex : self.endIndex
+
+            endIndex = index(end, offsetBy: e!)
+        }
+        let range = Range<String.Index>(startIndex..<endIndex)
+        
+        return self.substring(with: range)
+        
+    }
+}
+
+
   public final  class SLPlacemark: NSObject {
    
-    var  country:NSString?
+    var  country:String?
     
-    var  province:NSString?{
+    var  province:String?{
     
         didSet{
             if (province?.hasSuffix("省"))! {
                
-            province =  province?.substring(to: (province?.length)! - 1) as NSString?
+            province =  province?.substring(s: 0, province!.characters.count - 1)
                 
             }else if(province?.hasSuffix("市"))!{
-              province =  province?.substring(to: (province?.length)! - 1) as NSString?
+              province =  province?.substring(s: 0, province!.characters.count - 1)
             }
         }
     }
     
-    var  city:NSString?{
+    var  city:String?{
        
         didSet{
+            
             if (city?.hasSuffix("市辖区"))! {
                 
-                city =  city?.substring(to: (city?.length)! - 3) as NSString?
-                
+                city =  city?.substring(s: 0, (city?.characters.count)! - 3)
             }
             if(city?.hasSuffix("市"))!{
-                city =  city?.substring(to: (city?.length)! - 1) as NSString?
+                city =  city?.substring(s: 0, (city?.characters.count)! - 1)
             }
             
             if((city?.hasSuffix("香港特別行政區"))!||(city?.hasSuffix("香港特别行政区"))!){
@@ -49,13 +76,13 @@ import CoreLocation
         
     }
     
-    var  county:NSString?
+    var  county:String?
     
-    var  address:NSString?
+    var  address:String?
     
     var placemarkId:NSInteger?
     
-    var  type:NSString?
+    var  type:String?
     
     var latitude:CLLocationDegrees?
     
@@ -75,11 +102,11 @@ import CoreLocation
         
         if (cityName?.hasSuffix("市辖区"))! {
             
-            cityName =  cityName?.substring(to: (cityName?.length)! - 3) as NSString?
+             city =  city?.substring(s: 0, (city?.characters.count)! - 3)
             
         }
         if(cityName?.hasSuffix("市"))!{
-            cityName =  cityName?.substring(to: (cityName?.length)! - 1) as NSString?
+             city =  city?.substring(s: 0, (city?.characters.count)! - 1)
         }
         
         if((cityName?.hasSuffix("香港特別行政區"))!||(cityName?.hasSuffix("香港特别行政区"))!){
@@ -101,16 +128,16 @@ import CoreLocation
         
         super.init()
         //bug
-        self.city = NSString.init(string: placeMark.locality!)
+        self.city = placeMark.locality
         
-        self.country = placeMark.country! as NSString
+        self.country = placeMark.country
         
-        self.county  = placeMark.subLocality! as NSString
+        self.county  = placeMark.subLocality
         
-        self.province = placeMark.administrativeArea! as NSString
+        self.province = placeMark.administrativeArea
         
-        self.address  = "\(placeMark.thoroughfare! as NSString )\(placeMark.subThoroughfare! as NSString)" as NSString
-        
+        self.address  = "\(placeMark.thoroughfare) \(placeMark.subThoroughfare)"
+    
     }
 }
 //获取经当前用户信息
