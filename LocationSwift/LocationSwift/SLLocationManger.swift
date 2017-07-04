@@ -135,8 +135,8 @@ extension String {
         self.county  = placeMark.subLocality
         
         self.province = placeMark.administrativeArea
-        
-        self.address  = "\(placeMark.thoroughfare) \(placeMark.subThoroughfare)"
+
+        self.address  = placeMark.thoroughfare! + placeMark.subThoroughfare!
     
     }
 }
@@ -229,7 +229,7 @@ class SLLocationManger: NSObject ,CLLocationManagerDelegate {
         
         let location:CLLocation = CLLocation.init(latitude: coor.latitude, longitude: coor.longitude)
         
-        geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+        geocoder.reverseGeocodeLocation(location) { [unowned self] (placemarks, error) in
             if let placeMark:CLPlacemark  = placemarks?.first{
                 
                 
@@ -251,8 +251,8 @@ class SLLocationManger: NSObject ,CLLocationManagerDelegate {
         self.userlocation = location
         
         self.locationPlacemarkError = Placemarkerror
-        
-        geocoder.geocodeAddressString(address as String) { (placemarks, error) in
+         //解决循环引用问题
+        geocoder.geocodeAddressString(address as String) { [unowned self] (placemarks, error) in
             
             if (placemarks?.isEmpty)!  == false {
                
@@ -296,7 +296,7 @@ class SLLocationManger: NSObject ,CLLocationManagerDelegate {
                 self.userlocation!(location)
             }
             
-            geocoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
+            geocoder.reverseGeocodeLocation(location, completionHandler: {  [unowned self] (placemarks, error) in
                 if let placeMark:CLPlacemark  = placemarks?.first{
                 
                     if self.locationPlacemark != nil {
